@@ -165,22 +165,6 @@ def groupme():
     elif text.startswith('/gordy'):
         gordytext = 'Unsupported command. Supported commands:' + gordycommands
         gordyspeak( gordytext = gordytext )
-    elif fuckchance <= 2 and postdata['name'] != 'Space Gordy':
-        url = 'http://www.foaas.com/operations'
-        headers = {'Accept': 'application/json'}
-        r = requests.get(url, headers=headers)
-        fuck = json.loads(r.text)
-        action = random.choice(fuck)
-        url = action['url']
-        url = url.replace(':from', 'Space Gordy')
-        url = url.replace(':name', postdata['name'])
-        url = 'http://www.foaas.com' + url
-        if '/:' or 'version' not in url:
-        #not sure why this doesn't filter out incomplete commands
-            r = requests.get(url, headers=headers)
-            fuck = json.loads(r.text)
-            gordyspeak( fuck['message'] )
-
     #image testing
     elif len(postdata['attachments']) is not 0:
         if postdata['attachments'][0]['type'] == 'image' and fuckchance <= 5:
@@ -199,7 +183,6 @@ def groupme():
                     frame.paste(foreground, (framepos, 0), foreground)
                     frames.append(frame)
 
-                #f = StringIO()
                 writeGif("temp.gif", frames, duration=0.4, dither=0)
                 files = {'file': open('temp.gif', 'rb')}
                 payload = {'access_token': groupmetoken} 
@@ -207,6 +190,25 @@ def groupme():
                 logging.info(r.text)
                 imagedata = json.loads(r.text)
                 gordyspeak(imagedata['payload']['url'])
+
+    elif fuckchance <= 2 and postdata['name'] != 'Space Gordy':
+        url = 'http://www.foaas.com/operations'
+        headers = {'Accept': 'application/json'}
+        r = requests.get(url, headers=headers)
+        fuck = json.loads(r.text)
+        action = random.choice(fuck)
+        url = action['url']
+        url = url.replace(':from', 'Space Gordy')
+        url = url.replace(':name', postdata['name'])
+        url = 'http://www.foaas.com' + url
+        if '/:' or 'version' not in url:
+        #not sure why this doesn't filter out incomplete commands
+            r = requests.get(url, headers=headers)
+            fuck = json.loads(r.text)
+            gordyspeak( fuck['message'] )
+
+
+
 
     #discord link
     if postdata['name'] != 'Space Gordy':
